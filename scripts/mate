@@ -1,0 +1,39 @@
+#!/bin/bash
+# mate - The Official Package Manager for Lilantix
+
+case "$1" in
+    install-this)
+        if [ -z "$2" ]; then echo "Usage: mate install-this <pkg>"; exit 1; fi
+        echo "Mate is installing '$2'..."
+        sudo apt-get update -qq && sudo apt-get install -y "$2"
+        echo "Success! '$2' installed."
+        ;;
+    remove-this)
+        if [ -z "$2" ]; then echo "Usage: mate remove-this <pkg>"; exit 1; fi
+        echo "Mate is removing '$2'..."
+        sudo apt-get purge -y "$2" && sudo apt-get autoremove -y
+        echo "Success! '$2' removed."
+        ;;
+    search-this)
+        if [ -z "$2" ]; then echo "Usage: mate search-this <keyword>"; exit 1; fi
+        apt-cache search "$2"
+        ;;
+    update-this)
+        echo "Updating package lists..."
+        sudo apt-get update
+        ;;
+    upgrade-this)
+        echo "Upgrading system..."
+        sudo apt-get upgrade -y
+        ;;
+    clean-this)
+        echo "Cleaning up..."
+        sudo apt-get autoremove -y && sudo apt-get clean
+        echo "System cleaned."
+        ;;
+    *)
+        echo "Lilantix Package Manager (mate)"
+        echo "Usage: mate <command>-this [args]"
+        echo "Commands: install, remove, search, update, upgrade, clean"
+        ;;
+esac
