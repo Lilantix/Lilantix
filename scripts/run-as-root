@@ -1,0 +1,18 @@
+#!/bin/bash
+# run-as-root - Execute command with root privileges via Zenity GUI
+
+if [ -z "$1" ]; then
+    zenity --error --text="Usage: run-as-root <command>"
+    exit 1
+fi
+
+PASSWORD=$(zenity --password --title="Lilantix Security" --text="Enter ROOT password:")
+
+if [ $? -eq 0 ]; then
+    echo "$PASSWORD" | su -c "$@" root 2>/dev/null
+    if [ $? -ne 0 ]; then
+        zenity --error --text="Failed: Wrong password or command error."
+    fi
+else
+    zenity --info --text="Cancelled by user."
+fi
