@@ -1,0 +1,18 @@
+# Lilantix Start Menu
+
+prog "Terminal" /usr/share/pixmaps/terminal.png xterm
+prog "File Manager" /usr/share/pixmaps/folder.png pcmanfm
+prog "Web Browser" /usr/share/pixmaps/browser.png falkon
+
+separator
+
+prog "Run as ROOT" /usr/share/pixmaps/root.png run-as-root xterm
+prog "Package Manager (mate)" /usr/share/pixmaps/pkg.png xterm -e mate
+
+separator
+
+prog "Settings" /usr/share/pixmaps/settings.png icewmcfg
+
+separator
+
+exit "Logout" /usr/share/pixmaps/logout.png

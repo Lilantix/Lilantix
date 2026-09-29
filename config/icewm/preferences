@@ -1,0 +1,20 @@
+# Lilantix IceWM Preferences (XPBlue Style)
+
+# Taskbar Position: 3 = Bottom
+TaskBarAtTop=0
+
+# Show Clock and System Tray
+ShowClock=1
+ShowSystemTray=1
+ShowMailbox=0
+
+# Theme Selection (We will use a built-in or simple blue theme)
+Theme="XPBlue"
+
+# Window Behavior
+OpaqueMove=0
+OpaqueResize=0
+FocusMode=1
+
+# Menu
+MenuMouseActivate=1

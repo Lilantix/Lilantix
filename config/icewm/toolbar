@@ -1,0 +1,6 @@
+# Lilantix Taskbar Shortcuts
+
+prog "Terminal" /usr/share/pixmaps/terminal.png xterm
+prog "File Manager" /usr/share/pixmaps/folder.png pcmanfm
+prog "Browser" /usr/share/pixmaps/browser.png falkon
+prog "Run as ROOT" /usr/share/pixmaps/root.png run-as-root xterm
