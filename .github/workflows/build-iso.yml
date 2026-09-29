@@ -18,11 +18,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y debootstrap squashfs-tools genisoimage rsync isolinux syslinux-utils
 
-    - name: Prepare Debian Base (SysVinit)
+    - name: Prepare Debian Base (SysVinit + Kernel)
       run: |
         mkdir -p build/rootfs
-        # Menggunakan Debian Stable dan menginstall sysvinit-core secara eksplisit
-        sudo debootstrap stable build/rootfs http://ftp.us.debian.org/debian/ --include=sysvinit-core,sysvinit-utils
+        sudo debootstrap stable build/rootfs http://ftp.us.debian.org/debian/ \
+          --include=sysvinit-core,sysvinit-utils,linux-image-amd64,initramfs-tools,sudo
         
     - name: Customize System (The Lilantix Touch)
       run: |
@@ -40,7 +40,7 @@ jobs:
         sudo chroot build/rootfs /bin/bash -c '
           echo "deb http://ftp.us.debian.org/debian stable main" > /etc/apt/sources.list
           apt-get update
-          apt-get install -y icewm xorg xterm pcmanfm falkon zenity sudo
+          apt-get install -y icewm xorg xterm pcmanfm falkon zenity
           apt-get purge -y firefox-esr libreoffice* cups* transmission-gtk
           apt-get autoremove -y
           apt-get clean
@@ -53,23 +53,24 @@ jobs:
         
         # Copy bootloader files
         cp /usr/lib/ISOLINUX/isolinux.bin build/iso/boot/isolinux/
-        cp /usr/lib/syslinux/modules/bios/ldlinux.c32 build/iso/boot/isolinux/
+        cp /usr/lib/syslinux/modules/bios/*.c32 build/iso/boot/isolinux/
         
-        # Membuat konfigurasi boot (isolinux.cfg)
-        cat > build/iso/boot/isolinux/isolinux.cfg << EOF
-DEFAULT linux
-LABEL linux
-SAY Now booting Lilantix...
-KERNEL /live/vmlinuz
-APPEND initrd=/live/initrd.img boot=live config quiet splash
-TIMEOUT 50
+        # Membuat konfigurasi boot (isolinux.cfg) dengan cara yang aman untuk YAML
+        cat > build/iso/boot/isolinux/isolinux.cfg << 'ENDCFG'
+UI menu.c32
 PROMPT 0
-EOF
+TIMEOUT 50
+DEFAULT lilantix
+
+MENU TITLE Lilantix Live System
+
+LABEL lilantix
+MENU LABEL Boot Lilantix
+KERNEL /live/vmlinuz
+APPEND initrd=/live/initrd.img boot=live quiet splash
+ENDCFG
 
         # Copy kernel dan initrd dari rootfs ke live folder
-        # (Di debootstrap, kita perlu install linux-image dulu atau copy dari host)
-        # Untuk simplicity, kita asumsikan kita pakai kernel dari host build atau install di chroot
-        sudo chroot build/rootfs apt-get install -y linux-image-amd64 initramfs-tools
         sudo cp build/rootfs/boot/vmlinuz-* build/iso/live/vmlinuz
         sudo cp build/rootfs/boot/initrd.img-* build/iso/live/initrd.img
 
